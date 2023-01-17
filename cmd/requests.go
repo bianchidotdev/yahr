@@ -69,7 +69,7 @@ var requestsListCmd = &cobra.Command{
 	Short: "List all requests",
 	Run: func(cmd *cobra.Command, args []string) {
 		var requests []RequestConfig
-		for key, _req := range viper.GetStringMap("requests") {
+		for key, _ := range viper.GetStringMap("requests") {
 			requests = append(requests, newRequest(key))
 		}
 		printRequestList(requests)
