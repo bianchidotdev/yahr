@@ -3,12 +3,12 @@ module github.com/michaeldbianchi/yahr
 go 1.19
 
 require (
+	github.com/brettski/go-termtables v0.0.0-20190907034855-12ddd59af020
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 )
 
 require (
-	github.com/brettski/go-termtables v0.0.0-20190907034855-12ddd59af020 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
