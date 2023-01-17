@@ -2,7 +2,7 @@
 
 Yahr (YAml Http Request) is a system for making HTTP requests based on YAML files.
 
-> **NOTE**
+> **Note**
 > This is an alpha project and should not be considered stable
 
 ## Getting started
