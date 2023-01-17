@@ -21,11 +21,11 @@ YAML spec
 ``` yaml
 requests:
   google_get:
-    url: google.com
+    host: google.com
     scheme: https // default: https
     path: /
   private_server_get
-    url: localhost
+    host: localhost
     port: 2222
     scheme: http
     path: /opl/health

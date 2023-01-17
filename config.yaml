@@ -1,11 +1,10 @@
 requests:
   google_get:
-    url: google.com
+    host: google.com
     scheme: https
     path: /
   private_server_get:
-    url: localhost
-    port: 2222
+    host: localhost:2222
     scheme: http
     path: /opl/health
     headers:

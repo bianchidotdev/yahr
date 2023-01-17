@@ -14,7 +14,7 @@ package common
 // type RequestConfig struct {
 // 	method      string
 // 	scheme      string
-// 	url         string
+// 	host        string
 // 	port        int
 // 	path        string
 // 	headers     map[string]string
