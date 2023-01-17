@@ -30,7 +30,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		viper.AddConfigPath("./")
-		viper.SetConfigName("config")
+		viper.SetConfigName("yahr")
 		// // Find home directory.
 		// home, err := homedir.Dir()
 		// if err != nil {
