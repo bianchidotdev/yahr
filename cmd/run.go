@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/michaeldbianchi/yahr/common"
 )
@@ -17,21 +18,22 @@ func printRequest(req *http.Request) {
 		log.Fatal(err)
 	}
 
-	// TODO: if !silent
-	fmt.Printf("REQUEST:\n%s", string(reqDump))
+	if !viper.GetBool("silent") {
+		fmt.Printf("Request:\n%s", string(reqDump))
+	}
 }
 
 func printResponse(execution common.RequestExecution) {
-	// if !silent
-	fmt.Println("Status:", execution.Response.StatusCode)
-	// if !silent
-	fmt.Println("Response Body:", execution.ResponseBody)
-	// TODO: only print raw response if silent
-	fmt.Println(execution.ResponseBody)
+	if !viper.GetBool("silent") {
+		fmt.Println("Status:", execution.Response.StatusCode)
+		fmt.Println("Response Body:\n", execution.ResponseBody)
+	} else {
+		fmt.Println(execution.ResponseBody)
+	}
 }
 
 var runCmd = &cobra.Command{
-	Use:   "run",
+	Use: "run REQUEST",
 	Short: "Execute http requests",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, arg []string) {
@@ -43,7 +45,7 @@ var runCmd = &cobra.Command{
 		client := common.MakeClient(config)
 		req, err := common.MakeRequest(config)
 		if err != nil {
-			log.Println("Failed to make request", err)
+			log.Fatal("Failed to make request", err)
 		}
 
 		printRequest(req)

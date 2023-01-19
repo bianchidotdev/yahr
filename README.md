@@ -8,10 +8,14 @@ Yahr (YAml Http Request) is a system for making HTTP requests based on YAML file
 ## Immediate TODO
 
 * [x] Implement request list command
+* [x] Implement run command to actually run requests
+* [x] Fix config flag
+* [x] Fix silent flag
+* [x] More sophisticated versioning
 * [ ] Separate out business logic from CLI commands
 * [ ] Implement at least happy-path tests
-* [ ] Implement run command to actually run requests
 * [ ] Rework yaml spec to support groups of requests
+* [ ] Fix verbose flag
 
 ## Getting started
 

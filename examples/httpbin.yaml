@@ -1,0 +1,4 @@
+requests:
+  httpbin_get:
+    host: httpbin.org
+    path: /get
