@@ -25,7 +25,8 @@ func init() {
 }
 
 func initConfig() {
-	// Don't forget to read config either from cfgFile or from home directory!
+	// TODO: don't blow up on missing config
+
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
@@ -34,7 +35,7 @@ func initConfig() {
 		// // Find home directory.
 		// home, err := homedir.Dir()
 		// if err != nil {
-		//   fmt.Println(err)
+		//   log.Println(err)
 		//   os.Exit(1)
 		// }
 
@@ -43,14 +44,12 @@ func initConfig() {
 		// viper.SetConfigName(".yahr")
 	}
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Can't read config:", err)
-		os.Exit(1)
+		log.Fatal("Can't read config:", err)
 	}
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

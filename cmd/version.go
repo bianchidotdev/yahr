@@ -15,6 +15,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of yahr",
 	Long:  `Print the version information of yahr`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// TODO: make version not dependent on config file
 		fmt.Println("yahr v0.0.1 -- HEAD")
 	},
 }

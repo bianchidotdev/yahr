@@ -1,8 +1,7 @@
 requests:
-  google_get:
-    host: google.com
-    scheme: https
-    path: /
+  httpbin_get:
+    host: httpbin.org
+    path: /get
   private_server_get:
     host: localhost:2222
     scheme: http

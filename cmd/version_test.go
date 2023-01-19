@@ -7,6 +7,7 @@ import (
 )
 
 func TestVersionCmd(t *testing.T) {
+	// TODO: fixture-ize config path
 	viper.AddConfigPath("../")
 	err := versionCmd.Execute()
 	if err != nil {

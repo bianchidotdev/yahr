@@ -1,26 +1,56 @@
 package common
 
-// import (
-// 	"fmt"
-// 	"gopkg.in/yaml.v2"
-// 	"ioutil"
-// 	"text/template"
-// )
+ import (
+	"log"
+	"net/url"
+	"github.com/spf13/viper"
+ )
 
-// type AppConfig struct {
-// 	requests map[string]RequestConfig
-// }
+type RequestConfig struct {
+	Name        string
+	Method      string
+	Scheme      string
+	Host        string
+	Path        string
+	Headers     map[string]string
+	Payload     []byte
+	QueryParams string
+}
 
-// type RequestConfig struct {
-// 	method      string
-// 	scheme      string
-// 	host        string
-// 	port        int
-// 	path        string
-// 	headers     map[string]string
-// 	payload     []byte
-// 	queryParams string
-// }
+func (req RequestConfig) Url() *url.URL {
+	reqUrl := &url.URL{
+		Scheme: req.Scheme,
+		Host:   req.Host,
+		Path:   req.Path,
+	}
+	return reqUrl
+}
+
+func FetchRequestConfigs() []RequestConfig {
+    var requests []RequestConfig
+
+	for key, _ := range viper.GetStringMap("requests") {
+		requests = append(requests, MakeRequestConfig(key))
+	}
+
+	return requests
+}
+
+func MakeRequestConfig(requestKey string) RequestConfig {
+	request := RequestConfig{
+		Name:   requestKey,
+		Method: "get",
+		Scheme: "https",
+		Path:   "/",
+	}
+	accessKey := "requests." + requestKey
+
+	err := viper.UnmarshalKey(accessKey, &request)
+	if err != nil {
+		log.Println("Failed to parse request", err)
+	}
+	return request
+}
 
 // func readConfig(path string) (ProxyConfig, error) {
 // 	content, err := ioutil.ReadFile(path)
@@ -53,6 +83,6 @@ package common
 // }													   //
 // t.Execute(&finalData, data)							   //
 // str := finalData.String()							   //
-// fmt.Println(str)										   //
+// log.Println(str)										   //
 // // unmarshal YAML here - from finalData.Bytes()		   //
 /////////////////////////////////////////////////////////////
