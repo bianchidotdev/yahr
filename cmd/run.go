@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/michaeldbianchi/yahr/common"
 )
@@ -33,7 +33,7 @@ func printResponse(execution common.RequestExecution) {
 }
 
 var runCmd = &cobra.Command{
-	Use: "run REQUEST",
+	Use:   "run REQUEST",
 	Short: "Execute http requests",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, arg []string) {
@@ -52,7 +52,7 @@ var runCmd = &cobra.Command{
 
 		execution, err := common.Execute(req, client)
 		if err != nil {
-			log.Fatal("client: could not create request: %s\n", err)
+			log.Fatal("client: could not create request:", err)
 			os.Exit(1)
 		}
 

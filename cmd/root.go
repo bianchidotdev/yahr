@@ -44,7 +44,6 @@ func initConfig() {
 	// 	viper.AddConfigPath("./")
 	// 	viper.SetConfigName("yahr")
 
-
 	// 	// // Find home directory.
 	// 	// home, err := homedir.Dir()
 	// 	// if err != nil {

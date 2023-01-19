@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/michaeldbianchi/yahr/cmd"
+	"github.com/spf13/cobra"
 )
 
 // used by goreleaser
