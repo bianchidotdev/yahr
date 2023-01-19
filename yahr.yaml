@@ -1,10 +1,21 @@
 requests:
-  httpbin_get:
+  httpbin:
     host: httpbin.org
-    path: /get
-  private_server_get:
-    host: localhost:2222
+    requests:
+      get:
+        path: /get
+      get200:
+        path: /status/200
+      post:
+        method: post
+        path: /post
+        payload: {"hello": "world"}
+
+  local:
     scheme: http
-    path: /opl/health
+    host: localhost:8080
     headers:
-      Authorization: Bearer {{ .PRIVATE_SERVER_ENV_VAR }}_
+      Authorization: Bearer {{ .PRIVATE_SERVER_ENV_VAR }}
+    requests:
+      get:
+        path: /get

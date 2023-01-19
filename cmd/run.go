@@ -33,17 +33,21 @@ func printResponse(execution common.RequestExecution) {
 }
 
 var runCmd = &cobra.Command{
-	Use:   "run REQUEST",
+	Use:   "run GROUP REQUEST",
 	Short: "Execute http requests",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, arg []string) {
-		config, err := common.FetchRequestConfigByName(arg[0])
-		if err != nil {
-			log.Fatal("Could not find request", err)
-		}
+		// TODO: implement select menu if not provided all options
+		group := arg[0]
+		name := arg[1]
+		request := common.FetchRequestByName(group, name)
+		// TODO: how to handle errors effectively?
+		// if err != nil {
+		// 	log.Fatal("Could not find request", err)
+		// }
 
-		client := common.MakeClient(config)
-		req, err := common.MakeRequest(config)
+		client := common.MakeClient(request.RequestConfig)
+		req, err := common.MakeHTTPRequest(request.RequestConfig)
 		if err != nil {
 			log.Fatal("Failed to make request", err)
 		}

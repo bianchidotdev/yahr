@@ -17,7 +17,7 @@ func MakeClient(config RequestConfig) *http.Client {
 	return client
 }
 
-func MakeRequest(config RequestConfig) (*http.Request, error) {
+func MakeHTTPRequest(config RequestConfig) (*http.Request, error) {
 	url := config.Url()
 	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 
