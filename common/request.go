@@ -1,14 +1,14 @@
 package common
 
 import (
-	"log"
 	"io"
+	"log"
 	"net/http"
 )
 
 type RequestExecution struct {
-	Request *http.Request
-	Response *http.Response
+	Request      *http.Request
+	Response     *http.Response
 	ResponseBody string
 }
 
@@ -25,7 +25,7 @@ func MakeRequest(config RequestConfig) (*http.Request, error) {
 }
 
 func Execute(req *http.Request, client *http.Client) (RequestExecution, error) {
-    execution := RequestExecution{
+	execution := RequestExecution{
 		Request: req,
 	}
 	execution.Request = req

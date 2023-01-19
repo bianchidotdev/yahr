@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"log"
-	"os"
 	"net/http"
 	"net/http/httputil"
-	"github.com/spf13/cobra"
+	"os"
 
 	"github.com/michaeldbianchi/yahr/common"
 )
@@ -22,26 +22,29 @@ func printRequest(req *http.Request) {
 }
 
 func printResponse(execution common.RequestExecution) {
-		// if !silent
-		fmt.Println("Status:", execution.Response.StatusCode)
-		// if !silent
-		fmt.Println("Response Body:",execution.ResponseBody)
-		// TODO: only print raw response if silent
-		fmt.Println(execution.ResponseBody)
+	// if !silent
+	fmt.Println("Status:", execution.Response.StatusCode)
+	// if !silent
+	fmt.Println("Response Body:", execution.ResponseBody)
+	// TODO: only print raw response if silent
+	fmt.Println(execution.ResponseBody)
 }
 
 var runCmd = &cobra.Command{
-	Use: "run",
+	Use:   "run",
 	Short: "Execute http requests",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, arg []string) {
-		requests := common.FetchRequestConfigs()
-		config := requests[0]
+		config, err := common.FetchRequestConfigByName(arg[0])
+		if err != nil {
+			log.Fatal("Could not find request", err)
+		}
 
 		client := common.MakeClient(config)
 		req, err := common.MakeRequest(config)
-        if err != nil {
+		if err != nil {
 			log.Println("Failed to make request", err)
-        }
+		}
 
 		printRequest(req)
 

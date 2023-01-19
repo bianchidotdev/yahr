@@ -1,10 +1,10 @@
 package common
 
- import (
+import (
+	"github.com/spf13/viper"
 	"log"
 	"net/url"
-	"github.com/spf13/viper"
- )
+)
 
 type RequestConfig struct {
 	Name        string
@@ -26,17 +26,26 @@ func (req RequestConfig) Url() *url.URL {
 	return reqUrl
 }
 
-func FetchRequestConfigs() []RequestConfig {
-    var requests []RequestConfig
+func FetchRequestConfigs() ([]RequestConfig, error) {
+	var requests []RequestConfig
 
 	for key, _ := range viper.GetStringMap("requests") {
-		requests = append(requests, MakeRequestConfig(key))
+		req, err := MakeRequestConfig(key)
+		if err != nil {
+			return nil, err
+		}
+		requests = append(requests, req)
 	}
 
-	return requests
+	return requests, nil
 }
 
-func MakeRequestConfig(requestKey string) RequestConfig {
+func FetchRequestConfigByName(name string) (RequestConfig, error) {
+	request, err := MakeRequestConfig(name)
+	return request, err
+}
+
+func MakeRequestConfig(requestKey string) (RequestConfig, error) {
 	request := RequestConfig{
 		Name:   requestKey,
 		Method: "get",
@@ -46,10 +55,12 @@ func MakeRequestConfig(requestKey string) RequestConfig {
 	accessKey := "requests." + requestKey
 
 	err := viper.UnmarshalKey(accessKey, &request)
+	// TODO: this doesn't seem to be working
 	if err != nil {
 		log.Println("Failed to parse request", err)
+		return RequestConfig{}, err
 	}
-	return request
+	return request, nil
 }
 
 // func readConfig(path string) (ProxyConfig, error) {

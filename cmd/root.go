@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
+	"log"
 )
 
 var rootCmd = &cobra.Command{
@@ -18,10 +17,14 @@ and run http requests and easily share them with your team.`,
 }
 
 var cfgFile string
+var Verbose bool
+var Silent bool
 
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yaml)")
+	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
+	rootCmd.PersistentFlags().BoolVarP(&Silent, "silent", "s", false, "silence all output other than the response body")
 }
 
 func initConfig() {

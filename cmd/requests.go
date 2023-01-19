@@ -4,6 +4,7 @@ import (
 	"fmt"
 	termtables "github.com/brettski/go-termtables"
 	"github.com/spf13/cobra"
+	"log"
 
 	"github.com/michaeldbianchi/yahr/common"
 )
@@ -32,7 +33,10 @@ var requestsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all requests",
 	Run: func(cmd *cobra.Command, args []string) {
-		requests := common.FetchRequestConfigs()
+		requests, err := common.FetchRequestConfigs()
+		if err != nil {
+			log.Fatal("Failed to load config", err)
+		}
 		printRequestList(requests)
 	},
 }
