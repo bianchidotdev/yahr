@@ -1,65 +1,141 @@
 package common
 
 import (
-	"github.com/spf13/viper"
+	"fmt"
 	"log"
 	"net/url"
+
+	"github.com/imdario/mergo"
+	"github.com/spf13/viper"
 )
 
 type RequestConfig struct {
-	Name        string
+	Name      string
+	GroupName string
+	HTTPConfig
+}
+
+type RequestGroup struct {
+	Name     string
+	Requests []RequestConfig
+	HTTPConfig
+}
+
+type HTTPConfig struct {
 	Method      string
 	Scheme      string
 	Host        string
 	Path        string
 	Headers     map[string]string
-	Payload     []byte
+	Payload     map[interface{}]interface{} //[]byte
 	QueryParams string
 }
 
-func (req RequestConfig) Url() *url.URL {
+func (config HTTPConfig) Url() *url.URL {
 	reqUrl := &url.URL{
-		Scheme: req.Scheme,
-		Host:   req.Host,
-		Path:   req.Path,
+		Scheme: config.Scheme,
+		Host:   config.Host,
+		Path:   config.Path,
 	}
 	return reqUrl
 }
 
-func FetchRequestConfigs() ([]RequestConfig, error) {
+func FetchRequestConfigsByGroup(group string) []RequestConfig {
+	groupConfig := FetchRequestGroup(group)
+
+	return groupConfig.Requests
+}
+
+func FetchRequestConfigs() []RequestConfig {
 	var requests []RequestConfig
 
-	for key, _ := range viper.GetStringMap("requests") {
-		req, err := MakeRequestConfig(key)
-		if err != nil {
-			return nil, err
+	for _, group := range FetchRequestGroups() {
+		for _, req := range group.Requests {
+			requests = append(requests, req)
 		}
-		requests = append(requests, req)
 	}
 
-	return requests, nil
+	return requests
 }
 
-func FetchRequestConfigByName(name string) (RequestConfig, error) {
-	request, err := MakeRequestConfig(name)
-	return request, err
+func FetchRequestConfigByName(group string, reqName string) RequestConfig {
+	req, err := MakeRequestConfig(group, reqName)
+	if err != nil {
+		log.Fatal("Failed to parse request", err)
+	}
+
+	return req
 }
 
-func MakeRequestConfig(requestKey string) (RequestConfig, error) {
-	request := RequestConfig{
-		Name:   requestKey,
+func FetchRequestGroups() []RequestGroup {
+	var groups []RequestGroup
+
+	for group, _ := range viper.GetStringMap("requests") {
+		groupConfig := MakeRequestGroup(group)
+		groups = append(groups, groupConfig)
+	}
+
+	return groups
+}
+
+func FetchRequestGroup(group string) RequestGroup {
+	return MakeRequestGroup(group)
+}
+
+func MakeRequestGroup(group string) RequestGroup {
+	var requests []RequestConfig
+	groupAccessKey := fmt.Sprintf("requests.%s.requests", group)
+	for key, _ := range viper.GetStringMap(groupAccessKey) {
+		req, err := MakeRequestConfig(group, key)
+		if err != nil {
+			log.Fatal("Failed to parse request", err)
+		}
+
+		requests = append(requests, req)
+	}
+	// TODO: handle group level configuration
+	return RequestGroup{
+		Name:     group,
+		Requests: requests,
+	}
+}
+
+func makeDefaultHTTPConfig() HTTPConfig {
+	return HTTPConfig{
 		Method: "get",
 		Scheme: "https",
 		Path:   "/",
 	}
-	accessKey := "requests." + requestKey
+}
 
-	err := viper.UnmarshalKey(accessKey, &request)
+func MakeRequestConfig(group string, requestName string) (RequestConfig, error) {
+	groupHTTPConfig := makeDefaultHTTPConfig()
+	err := viper.UnmarshalKey(fmt.Sprintf("requests.%s", group), &groupHTTPConfig)
+	if err != nil {
+		log.Println("Failed to parse group", err)
+		return RequestConfig{}, err
+	}
+
+	accessKey := fmt.Sprintf("requests.%s.requests.%s", group, requestName)
+	var requestConfig HTTPConfig
+	err = viper.UnmarshalKey(accessKey, &requestConfig)
 	// TODO: this doesn't seem to be working
 	if err != nil {
 		log.Println("Failed to parse request", err)
 		return RequestConfig{}, err
 	}
+
+	err = mergo.Merge(&requestConfig, groupHTTPConfig)
+	if err != nil {
+		log.Fatal("Failed merging request configs", err)
+	}
+
+	request := RequestConfig{
+		Name:          requestName,
+		GroupName:     group,
+		HTTPConfig: requestConfig,
+	}
+
 	return request, nil
 }
 
