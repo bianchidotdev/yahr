@@ -9,7 +9,7 @@ import (
 	"github.com/michaeldbianchi/yahr/common"
 )
 
-func printRequestList(requests []common.Request) {
+func printRequestList(requests []common.RequestConfig) {
 	table := termtables.CreateTable()
 
 	table.AddHeaders("Group", "Name", "Method", "Endpoint")
@@ -34,13 +34,13 @@ var requestsListCmd = &cobra.Command{
 	Short: "List all requests",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var requests []common.Request
+		var requests []common.RequestConfig
 		var err error
 		if len(args) < 1 {
-			requests = common.FetchRequests()
+			requests = common.FetchRequestConfigs()
 		} else {
 			group := args[0]
-			requests = common.FetchRequestsByGroup(group)
+			requests = common.FetchRequestConfigsByGroup(group)
 		}
 
 		if err != nil {

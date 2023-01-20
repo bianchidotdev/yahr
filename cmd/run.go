@@ -40,14 +40,14 @@ var runCmd = &cobra.Command{
 		// TODO: implement select menu if not provided all options
 		group := arg[0]
 		name := arg[1]
-		request := common.FetchRequestByName(group, name)
+		request := common.FetchRequestConfigByName(group, name)
 		// TODO: how to handle errors effectively?
 		// if err != nil {
 		// 	log.Fatal("Could not find request", err)
 		// }
 
-		client := common.MakeClient(request.RequestConfig)
-		req, err := common.MakeHTTPRequest(request.RequestConfig)
+		client := common.MakeClient(request.HTTPConfig)
+		req, err := common.MakeHTTPRequest(request.HTTPConfig)
 		if err != nil {
 			log.Fatal("Failed to make request", err)
 		}

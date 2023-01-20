@@ -12,12 +12,12 @@ type RequestExecution struct {
 	ResponseBody string
 }
 
-func MakeClient(config RequestConfig) *http.Client {
+func MakeClient(config HTTPConfig) *http.Client {
 	client := &http.Client{}
 	return client
 }
 
-func MakeHTTPRequest(config RequestConfig) (*http.Request, error) {
+func MakeHTTPRequest(config HTTPConfig) (*http.Request, error) {
 	url := config.Url()
 	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 
