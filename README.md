@@ -14,8 +14,8 @@ Yahr (YAml Http Request) is a system for making HTTP requests based on YAML file
 * [x] More sophisticated versioning
 * [x] Separate out business logic from CLI commands
 * [x] Rework yaml spec to support groups of requests
-* [x] Fix/implement non-GET methods
-* [ ] Implement at least happy-path tests
+* [ ] Fix/implement non-GET methods
+* [ ] Implement at least happy-path tsests
 * [ ] Fix verbose flag
 * [ ] Make request methods more strict
 
@@ -28,23 +28,79 @@ go install github.com/michaeldbianchi/yahr
 yahr version
 ```
 
+List requests and run them:
+
+``` sh
+yahr requests list
+
+# +---------+--------+--------+--------------------------------+
+# | Group   | Name   | Method | Endpoint                       |
+# +---------+--------+--------+--------------------------------+
+# | httpbin | get200 | get    | https://httpbin.org/status/200 |
+# | httpbin | post   | post   | https://httpbin.org/post       |
+# | httpbin | get    | get    | https://httpbin.org/get        |
+# | local   | get    | get    | http://localhost:8080/get      |
+# +---------+--------+--------+--------------------------------+
+
+yahr run httpbin get
+
+# Request:
+# GET /get HTTP/1.1
+# Host: httpbin.org
+# User-Agent: Go-http-client/1.1
+# Accept-Encoding: gzip
+# 
+# Status: 200
+# Response Body:
+#  {
+#   "args": {},
+#   "headers": {
+#     "Accept-Encoding": "gzip",
+#     "Host": "httpbin.org",
+#     "User-Agent": "Go-http-client/2.0",
+#     "X-Amzn-Trace-Id": "Root=1-63cb33d6-0e6501db48f84bf2260e7dc3"
+#   },
+#   "origin": "89.187.180.41",
+#   "url": "https://httpbin.org/get"
+# }
+
+# use the -s silent flag for piping output
+
+yahr run httpbin get -s | jq .origin
+
+# "89.188.181.42"
+```
+
 ## Reference
 
 YAML spec
 
 ``` yaml
 requests:
-  google_get:
-    host: google.com
-    scheme: https // default: https
-    path: /
-  private_server_get
+  httpbin:
+    host: httpbin.org
+    requests:
+      get:
+        path: /get
+
+      get200:
+        path: /status/200
+
+      post:
+        path: /post
+        # should we allow yaml map and translate it into json?
+        # how do we deal with non json payloads
+        payload: {"test_payload": "yep. this is a test"}
+
+  private_server
     host: localhost
     port: 2222
     scheme: http
-    path: /opl/health
     headers:
       Authorization: Bearer {{ .PRIVATE_SERVER_ENV_VAR }}_
+    requests:
+      get:
+        path: /opl/health
 ```
 
 ## Roadmap
