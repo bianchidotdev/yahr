@@ -107,9 +107,16 @@ requests:
 ## Roadmap
 
 * [ ] Functional http requests based off yaml file
-* [ ] Arbitrarily nestable groups for deduplication of auth/headers/base-urls
+* [ ] Use of yahr as a go library (not just a cli app)
+* [ ] Sequences of requests
 * [ ] Inherit/import from other configuration files
 
+### Anti-features
+
+This is a set of features I don't foresee ever implementing in this project, usually because I foresee the complexity overwhelming what should be a straightforward tool.
+
+* [ ] Arbitrarily nestable groups for deduplication of auth/headers/base-urls
+* [ ] Feeding output from one request into another (I think this would be too complex for the codebase and can be done easily with light scripting)
 
 ## Appendix
 
@@ -136,6 +143,9 @@ requests:
     requests:
       get:
         path: /get
+
+# TODO: spec out sequences
+sequences:
 
 environments:
   dev:
