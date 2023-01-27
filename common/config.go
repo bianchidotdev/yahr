@@ -28,7 +28,7 @@ type HTTPConfig struct {
 	Path        string
 	Headers     map[string]string
 	Payload     map[interface{}]interface{} //[]byte
-	QueryParams string
+	QueryParams map[string]string `yaml:"query_params"`
 }
 
 func (config HTTPConfig) Url() *url.URL {
@@ -37,6 +37,15 @@ func (config HTTPConfig) Url() *url.URL {
 		Host:   config.Host,
 		Path:   config.Path,
 	}
+
+	if config.QueryParams != nil {
+		query := url.Values{}
+		for key, value := range config.QueryParams {
+            query.Add(key, value)
+		}
+		reqUrl.RawQuery = query.Encode()
+	}
+
 	return reqUrl
 }
 

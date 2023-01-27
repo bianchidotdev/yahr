@@ -12,19 +12,34 @@ type RequestExecution struct {
 	ResponseBody string
 }
 
-func MakeClient(config HTTPConfig) *http.Client {
+// Run entire request based off of config
+func Execute(reqConfig RequestConfig) (RequestExecution, error) {
+	client := BuildClient(reqConfig.HTTPConfig)
+	req, err := BuildHTTPRequest(reqConfig.HTTPConfig)
+	if err != nil {
+		return RequestExecution{Request: req}, err
+	}
+
+	log.Printf("Performing request for %s", reqConfig.Name)
+	return PerformRequest(req, client)
+}
+
+func BuildClient(config HTTPConfig) *http.Client {
 	client := &http.Client{}
 	return client
 }
 
-func MakeHTTPRequest(config HTTPConfig) (*http.Request, error) {
+func BuildHTTPRequest(config HTTPConfig) (*http.Request, error) {
 	url := config.Url()
 	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	for name, value := range config.Headers {
+		req.Header.Add(name, value)
+	}
 
 	return req, err
 }
 
-func Execute(req *http.Request, client *http.Client) (RequestExecution, error) {
+func PerformRequest(req *http.Request, client *http.Client) (RequestExecution, error) {
 	execution := RequestExecution{
 		Request: req,
 	}
@@ -36,6 +51,8 @@ func Execute(req *http.Request, client *http.Client) (RequestExecution, error) {
 		return execution, err
 	}
 	execution.Response = res
+
+	defer res.Body.Close()
 
 	resBody, err := io.ReadAll(res.Body)
 	if err != nil {

@@ -46,15 +46,15 @@ var runCmd = &cobra.Command{
 		// 	log.Fatal("Could not find request", err)
 		// }
 
-		client := common.MakeClient(request.HTTPConfig)
-		req, err := common.MakeHTTPRequest(request.HTTPConfig)
+		client := common.BuildClient(request.HTTPConfig)
+		req, err := common.BuildHTTPRequest(request.HTTPConfig)
 		if err != nil {
 			log.Fatal("Failed to make request", err)
 		}
 
 		printRequest(req)
 
-		execution, err := common.Execute(req, client)
+		execution, err := common.PerformRequest(req, client)
 		if err != nil {
 			log.Fatal("client: could not create request:", err)
 			os.Exit(1)

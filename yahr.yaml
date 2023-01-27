@@ -4,6 +4,8 @@ requests:
     requests:
       get:
         path: /get
+        queryparams: # this sucks - need to figure out how to have it be query_params
+          test: test
       get200:
         path: /status/200
       post:
