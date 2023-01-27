@@ -1,9 +1,12 @@
 package common
 
 import (
+	"bytes"
 	"io"
+	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type RequestExecution struct {
@@ -31,10 +34,17 @@ func BuildClient(config HTTPConfig) *http.Client {
 
 func BuildHTTPRequest(config HTTPConfig) (*http.Request, error) {
 	url := config.Url()
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+
+	body, err := buildPayload(config)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(strings.ToUpper(config.Method), url.String(), body)
 	for name, value := range config.Headers {
 		req.Header.Add(name, value)
 	}
+
 
 	return req, err
 }
@@ -62,4 +72,17 @@ func PerformRequest(req *http.Request, client *http.Client) (RequestExecution, e
 	execution.ResponseBody = string(resBody)
 
 	return execution, err
+}
+
+func buildPayload(config HTTPConfig) (io.Reader, error) {
+	var body io.Reader
+	if config.Payload != nil {
+		// req.Header.Add("content-type", "application/json")
+		payload, err := json.Marshal(config.Payload)
+		if err != nil {
+			return nil, err
+		}
+		body = bytes.NewBuffer(payload)
+    }
+	return body, nil
 }

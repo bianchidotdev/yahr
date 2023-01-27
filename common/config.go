@@ -27,7 +27,7 @@ type HTTPConfig struct {
 	Host        string
 	Path        string
 	Headers     map[string]string
-	Payload     map[interface{}]interface{} //[]byte
+	Payload     map[string]interface{} //[]byte
 	QueryParams map[string]string `yaml:"query_params"`
 }
 

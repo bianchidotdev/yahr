@@ -12,6 +12,9 @@ requests:
         method: post
         path: /post
         payload: {"hello": "world"}
+        # also supports long form yaml
+        # payload:
+        #   hello: world
 
   local:
     scheme: http
