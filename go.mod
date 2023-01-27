@@ -4,14 +4,15 @@ go 1.19
 
 require (
 	github.com/brettski/go-termtables v0.0.0-20190907034855-12ddd59af020
+	github.com/imdario/mergo v0.3.13
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
+	golang.org/x/exp v0.0.0-20230126173853-a67bb567ff2e
 )
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-runewidth v0.0.3-0.20170201023540-14207d285c6c // indirect
@@ -23,7 +24,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

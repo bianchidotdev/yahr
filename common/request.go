@@ -2,8 +2,8 @@ package common
 
 import (
 	"bytes"
-	"io"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -45,7 +45,6 @@ func BuildHTTPRequest(config HTTPConfig) (*http.Request, error) {
 		req.Header.Add(name, value)
 	}
 
-
 	return req, err
 }
 
@@ -83,6 +82,6 @@ func buildPayload(config HTTPConfig) (io.Reader, error) {
 			return nil, err
 		}
 		body = bytes.NewBuffer(payload)
-    }
+	}
 	return body, nil
 }

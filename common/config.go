@@ -3,11 +3,23 @@ package common
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
+	"strings"
+
+	"golang.org/x/exp/slices"
 
 	"github.com/imdario/mergo"
 	"github.com/spf13/viper"
 )
+
+type InvalidHTTPMethodError struct {
+	Method string
+}
+
+func (m *InvalidHTTPMethodError) Error() string {
+	return fmt.Sprintf("Method %s not valid", strings.ToUpper(m.Method))
+}
 
 type RequestConfig struct {
 	Name      string
@@ -28,7 +40,7 @@ type HTTPConfig struct {
 	Path        string
 	Headers     map[string]string
 	Payload     map[string]interface{} //[]byte
-	QueryParams map[string]string `yaml:"query_params"`
+	QueryParams map[string]string      `yaml:"query_params"`
 }
 
 func (config HTTPConfig) Url() *url.URL {
@@ -41,7 +53,7 @@ func (config HTTPConfig) Url() *url.URL {
 	if config.QueryParams != nil {
 		query := url.Values{}
 		for key, value := range config.QueryParams {
-            query.Add(key, value)
+			query.Add(key, value)
 		}
 		reqUrl.RawQuery = query.Encode()
 	}
@@ -70,7 +82,7 @@ func FetchRequestConfigs() []RequestConfig {
 func FetchRequestConfigByName(group string, reqName string) RequestConfig {
 	req, err := MakeRequestConfig(group, reqName)
 	if err != nil {
-		log.Fatal("Failed to parse request", err)
+		log.Fatal("Failed to parse request - ", err)
 	}
 
 	return req
@@ -126,26 +138,50 @@ func MakeRequestConfig(group string, requestName string) (RequestConfig, error) 
 	}
 
 	accessKey := fmt.Sprintf("requests.%s.requests.%s", group, requestName)
-	var requestConfig HTTPConfig
-	err = viper.UnmarshalKey(accessKey, &requestConfig)
+	var httpConfig HTTPConfig
+	err = viper.UnmarshalKey(accessKey, &httpConfig)
 	// TODO: this doesn't seem to be working
 	if err != nil {
 		log.Println("Failed to parse request", err)
 		return RequestConfig{}, err
 	}
 
-	err = mergo.Merge(&requestConfig, groupHTTPConfig)
+	err = mergo.Merge(&httpConfig, groupHTTPConfig)
 	if err != nil {
 		log.Fatal("Failed merging request configs", err)
 	}
 
+	err = validateHTTPConfig(httpConfig)
+	if err != nil {
+		return RequestConfig{}, err
+	}
+
 	request := RequestConfig{
-		Name:          requestName,
-		GroupName:     group,
-		HTTPConfig: requestConfig,
+		Name:       requestName,
+		GroupName:  group,
+		HTTPConfig: httpConfig,
 	}
 
 	return request, nil
+}
+
+func validateHTTPConfig(config HTTPConfig) error {
+	httpMethods := []string{
+		http.MethodGet,
+		http.MethodHead,
+		http.MethodPost,
+		http.MethodPut,
+		http.MethodPatch,
+		http.MethodDelete,
+		http.MethodConnect,
+		http.MethodOptions,
+		http.MethodTrace,
+	}
+	if !slices.Contains(httpMethods, strings.ToUpper(config.Method)) {
+		return &InvalidHTTPMethodError{Method: config.Method}
+	}
+
+	return nil
 }
 
 // func readConfig(path string) (ProxyConfig, error) {
