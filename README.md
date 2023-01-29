@@ -17,10 +17,9 @@ Yahr (YAml Http Request) is a system for making HTTP requests based on YAML file
 * [x] Fix/implement non-GET methods
 * [x] Rip out cobra
 * [x] Env var templating
+* [x] Make request methods more strict
 * [ ] Implement at least happy-path tests
 * [ ] Dynamic path variables `/users/:user_id`
-* [ ] Fix verbose flag
-* [ ] Make request methods more strict
 
 ## Getting started
 
