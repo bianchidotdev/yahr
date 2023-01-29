@@ -68,7 +68,7 @@ yahr run httpbin get
 
 # use the -s silent flag for piping output
 
-yahr run httpbin get -s | jq .origin
+yahr run -s httpbin get | jq .origin
 
 # "89.188.181.42"
 ```
