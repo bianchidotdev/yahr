@@ -3,8 +3,7 @@ package cmd
 import (
 	"fmt"
 	termtables "github.com/brettski/go-termtables"
-	"github.com/spf13/cobra"
-	"log"
+	"github.com/urfave/cli/v2"
 
 	"github.com/michaeldbianchi/yahr/common"
 )
@@ -19,33 +18,34 @@ func printRequestList(requests []common.RequestConfig) {
 	fmt.Println(table.Render())
 }
 
-func init() {
-	rootCmd.AddCommand(requestsCmd)
-	requestsCmd.AddCommand(requestsListCmd)
+var RequestCmd = &cli.Command{
+	Name: "requests",
+	Aliases: []string{"req",},
+	Usage: "A set of commands to work with requests",
+	Subcommands: []*cli.Command{
+		requestListCmd,
+	},
 }
 
-var requestsCmd = &cobra.Command{
-	Use:   "requests",
-	Short: "A set of commands to work with requests",
-}
-
-var requestsListCmd = &cobra.Command{
-	Use:   "list [GROUP]",
-	Short: "List all requests",
-	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+var requestListCmd = &cli.Command{
+	Name: "list",
+	Aliases: []string{"l",},
+	Usage: "List all requests, optionally limited to group of requests",
+	ArgsUsage: "[GROUP]",
+	Action: func(cCtx *cli.Context) error {
 		var requests []common.RequestConfig
 		var err error
-		if len(args) < 1 {
+		if cCtx.NArg() < 1 {
 			requests = common.FetchRequestConfigs()
 		} else {
-			group := args[0]
+			group := cCtx.Args().First()
 			requests = common.FetchRequestConfigsByGroup(group)
 		}
 
 		if err != nil {
-			log.Fatal("Failed to load config", err)
+			return err
 		}
 		printRequestList(requests)
+		return nil
 	},
 }

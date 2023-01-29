@@ -177,6 +177,8 @@ func validateHTTPConfig(config HTTPConfig) error {
 		http.MethodOptions,
 		http.MethodTrace,
 	}
+
+	// TODO: include debug details to make it easy to fix
 	if !slices.Contains(httpMethods, strings.ToUpper(config.Method)) {
 		return &InvalidHTTPMethodError{Method: config.Method}
 	}

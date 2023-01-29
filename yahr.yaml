@@ -26,8 +26,8 @@ requests:
         method: delete
         path: /delete
         payload: {"delete": "param"}
-      bad:
-        method: bad
+      # bad:
+      #   method: bad
 
   local:
     scheme: http

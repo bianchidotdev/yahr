@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
+	"time"
+	"github.com/spf13/viper"
+	"github.com/urfave/cli/v2"
+
 	"github.com/michaeldbianchi/yahr/cmd"
-	"github.com/spf13/cobra"
 )
 
 // used by goreleaser
@@ -13,15 +17,33 @@ var (
 	commit     = "none"
 	date       = "unknown"
 	output     = "json"
-	versionCmd = &cobra.Command{
-		Use:   "version",
-		Short: "Version will output the current build information",
-		Run: func(_ *cobra.Command, _ []string) {
-			fmt.Println("Version:", version)
-		},
-	}
 )
 
 func main() {
-	cmd.Execute(versionCmd)
+	viper.SetConfigFile("./yahr.yaml")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal("Can't read config:", err)
+	}
+
+	app := &cli.App{
+        Name:  "yahr",
+		Version:  version,
+		Compiled: time.Now(),
+        Authors: []*cli.Author{
+            &cli.Author{
+                Name:  "Michael Bianchi",
+                Email: "michael@bianchi.dev",
+            },
+        },
+        Usage: `A yaml-driven http client for being able to easily define
+and run http requests and easily share them with your team.`,
+        Commands: []*cli.Command{
+			cmd.RequestCmd,
+			cmd.RunCmd,
+		},
+    }
+
+    if err := app.Run(os.Args); err != nil {
+        log.Fatal(err)
+    }
 }
