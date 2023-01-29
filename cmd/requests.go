@@ -19,18 +19,18 @@ func printRequestList(requests []common.RequestConfig) {
 }
 
 var RequestCmd = &cli.Command{
-	Name: "requests",
-	Aliases: []string{"req",},
-	Usage: "A set of commands to work with requests",
+	Name:    "requests",
+	Aliases: []string{"req"},
+	Usage:   "A set of commands to work with requests",
 	Subcommands: []*cli.Command{
 		requestListCmd,
 	},
 }
 
 var requestListCmd = &cli.Command{
-	Name: "list",
-	Aliases: []string{"l",},
-	Usage: "List all requests, optionally limited to group of requests",
+	Name:      "list",
+	Aliases:   []string{"l"},
+	Usage:     "List all requests, optionally limited to group of requests",
 	ArgsUsage: "[GROUP]",
 	Action: func(cCtx *cli.Context) error {
 		var requests []common.RequestConfig

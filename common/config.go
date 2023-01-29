@@ -62,7 +62,7 @@ func (config HTTPConfig) Url() *url.URL {
 }
 
 func FetchRequestConfigsByGroup(group string) []RequestConfig {
-	groupConfig := FetchRequestGroup(group)
+	groupConfig := fetchRequestGroup(group)
 
 	return groupConfig.Requests
 }
@@ -70,7 +70,7 @@ func FetchRequestConfigsByGroup(group string) []RequestConfig {
 func FetchRequestConfigs() []RequestConfig {
 	var requests []RequestConfig
 
-	for _, group := range FetchRequestGroups() {
+	for _, group := range fetchRequestGroups() {
 		for _, req := range group.Requests {
 			requests = append(requests, req)
 		}
@@ -80,7 +80,7 @@ func FetchRequestConfigs() []RequestConfig {
 }
 
 func FetchRequestConfigByName(group string, reqName string) RequestConfig {
-	req, err := MakeRequestConfig(group, reqName)
+	req, err := makeRequestConfig(group, reqName)
 	if err != nil {
 		log.Fatal("Failed to parse request - ", err)
 	}
@@ -88,26 +88,26 @@ func FetchRequestConfigByName(group string, reqName string) RequestConfig {
 	return req
 }
 
-func FetchRequestGroups() []RequestGroup {
+func fetchRequestGroups() []RequestGroup {
 	var groups []RequestGroup
 
 	for group, _ := range viper.GetStringMap("requests") {
-		groupConfig := MakeRequestGroup(group)
+		groupConfig := makeRequestGroup(group)
 		groups = append(groups, groupConfig)
 	}
 
 	return groups
 }
 
-func FetchRequestGroup(group string) RequestGroup {
-	return MakeRequestGroup(group)
+func fetchRequestGroup(group string) RequestGroup {
+	return makeRequestGroup(group)
 }
 
-func MakeRequestGroup(group string) RequestGroup {
+func makeRequestGroup(group string) RequestGroup {
 	var requests []RequestConfig
 	groupAccessKey := fmt.Sprintf("requests.%s.requests", group)
 	for key, _ := range viper.GetStringMap(groupAccessKey) {
-		req, err := MakeRequestConfig(group, key)
+		req, err := makeRequestConfig(group, key)
 		if err != nil {
 			log.Fatal("Failed to parse request", err)
 		}
@@ -129,7 +129,7 @@ func makeDefaultHTTPConfig() HTTPConfig {
 	}
 }
 
-func MakeRequestConfig(group string, requestName string) (RequestConfig, error) {
+func makeRequestConfig(group string, requestName string) (RequestConfig, error) {
 	groupHTTPConfig := makeDefaultHTTPConfig()
 	err := viper.UnmarshalKey(fmt.Sprintf("requests.%s", group), &groupHTTPConfig)
 	if err != nil {

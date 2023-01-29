@@ -8,6 +8,7 @@ require (
 	github.com/spf13/viper v1.14.0
 	github.com/urfave/cli/v2 v2.24.1
 	golang.org/x/exp v0.0.0-20230126173853-a67bb567ff2e
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -30,5 +31,4 @@ require (
 	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

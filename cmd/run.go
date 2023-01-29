@@ -11,9 +11,9 @@ import (
 )
 
 var RunCmd = &cli.Command{
-	Name: "run",
-	Aliases: []string{"r"},
-	Usage: "Execute HTTP requests",
+	Name:      "run",
+	Aliases:   []string{"r"},
+	Usage:     "Execute HTTP requests",
 	ArgsUsage: "GROUP REQUEST",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{Name: "silent", Aliases: []string{"s"}},
@@ -67,4 +67,3 @@ func printResponse(cCtx *cli.Context, execution common.RequestExecution) {
 		fmt.Println(execution.ResponseBody)
 	}
 }
-
