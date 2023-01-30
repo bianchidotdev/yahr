@@ -8,14 +8,15 @@ import (
 	"github.com/michaeldbianchi/yahr/common"
 )
 
-func printRequestList(requests []common.RequestConfig) {
+func printRequestList(cCtx *cli.Context, requests []common.RequestConfig) {
 	table := termtables.CreateTable()
 
 	table.AddHeaders("Group", "Name", "Method", "Endpoint")
 	for _, req := range requests {
 		table.AddRow(req.GroupName, req.Name, req.Method, req.Url())
 	}
-	fmt.Println(table.Render())
+	// fmt.Println(table.Render())
+	fmt.Fprintf(cCtx.App.Writer, table.Render())
 }
 
 var RequestCmd = &cli.Command{
@@ -45,7 +46,7 @@ var requestListCmd = &cli.Command{
 		if err != nil {
 			return err
 		}
-		printRequestList(requests)
+		printRequestList(cCtx, requests)
 		return nil
 	},
 }

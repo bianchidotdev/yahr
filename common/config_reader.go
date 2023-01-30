@@ -19,7 +19,7 @@ func (e *MissingRequiredConfigError) Error() string {
 	return fmt.Sprintf(`Missing required top-level key "%s"`, e.Key)
 }
 
-func ReadConfig(cfgFile string) (map[string]interface{}, error) {
+func ReadConfig(cfgFile string) ([]byte, error) {
 	tmpl, err := template.ParseFiles(cfgFile)
 	if err != nil {
 		return nil, err
@@ -37,8 +37,12 @@ func ReadConfig(cfgFile string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
+	return ydata.Bytes(), nil
+}
+
+func ParseConfig(configBytes []byte) (map[string]interface{}, error) {
 	var appConfig map[string]interface{}
-	err = yaml.Unmarshal(ydata.Bytes(), &appConfig)
+	err := yaml.Unmarshal(configBytes, &appConfig)
 	if err != nil {
 		return nil, err
 	}

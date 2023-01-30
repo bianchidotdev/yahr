@@ -19,7 +19,7 @@ var (
 	output    = "json"
 )
 
-func main() {
+func NewApp() *cli.App {
 	app := &cli.App{
 		Name:     "yahr",
 		Version:  version,
@@ -40,11 +40,13 @@ and run http requests and easily share them with your team.`,
 			cmd.RunCmd,
 		},
 		Before: func(cCtx *cli.Context) error {
-			appConfig, err := common.ReadConfig(cCtx.String("cfgFile"))
+			configBytes, err := common.ReadConfig(cCtx.String("cfgFile"))
 			if err != nil {
 				log.Println("Error reading config: ", err)
 				return err
 			}
+
+			appConfig, err := common.ParseConfig(configBytes)
 
 			err = common.SetConfig(appConfig)
 			if err != nil {
@@ -54,6 +56,11 @@ and run http requests and easily share them with your team.`,
 			return nil
 		},
 	}
+	return app
+}
+
+func main() {
+	app := NewApp()
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)

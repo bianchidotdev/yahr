@@ -107,8 +107,9 @@ requests:
 
 ## Roadmap
 
-* [ ] Functional http requests based off yaml file
-* [ ] Use of yahr as a go library (not just a cli app)
+* [ ] Functional http requests based off yaml file - v0.1.0
+* [ ] Use of yahr as a go library (not just a cli app) - v0.2.0
+* [ ] Environments for changing http config across a series of requests (dev, staging, prod) - v0.3.0
 * [ ] Sequences of requests
 * [ ] Inherit/import from other configuration files
 
