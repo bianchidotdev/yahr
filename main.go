@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/michaeldbianchi/yahr/cmd"
-	"github.com/michaeldbianchi/yahr/common"
+	"github.com/michaeldbianchi/yahr/core"
 	"github.com/urfave/cli/v2"
 )
 
@@ -40,15 +40,15 @@ and run http requests and easily share them with your team.`,
 			cmd.RunCmd,
 		},
 		Before: func(cCtx *cli.Context) error {
-			configBytes, err := common.ReadConfig(cCtx.String("cfgFile"))
+			configBytes, err := core.ReadConfig(cCtx.String("cfgFile"))
 			if err != nil {
 				log.Println("Error reading config: ", err)
 				return err
 			}
 
-			appConfig, err := common.ParseConfig(configBytes)
+			appConfig, err := core.ParseConfig(configBytes)
 
-			err = common.SetConfig(appConfig)
+			err = core.SetConfig(appConfig)
 			if err != nil {
 				log.Println("Error reading config: ", err)
 				return err

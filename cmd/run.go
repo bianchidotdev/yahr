@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/michaeldbianchi/yahr/common"
+	"github.com/michaeldbianchi/yahr/core"
 )
 
 var RunCmd = &cli.Command{
@@ -22,14 +22,14 @@ var RunCmd = &cli.Command{
 		// TODO: implement select menu if not provided all options
 		group := cCtx.Args().Get(0)
 		name := cCtx.Args().Get(1)
-		request := common.FetchRequestConfigByName(group, name)
+		request := core.FetchRequestConfigByName(group, name)
 		// TODO: how to handle errors effectively?
 		// if err != nil {
 		// 	log.Fatal("Could not find request", err)
 		// }
 
-		client := common.BuildClient(request.HTTPConfig)
-		req, err := common.BuildHTTPRequest(request.HTTPConfig)
+		client := core.BuildClient(request.HTTPConfig)
+		req, err := core.BuildHTTPRequest(request.HTTPConfig)
 		if err != nil {
 			log.Println("Failed to make request", err)
 			return err
@@ -37,7 +37,7 @@ var RunCmd = &cli.Command{
 
 		printRequest(cCtx, req)
 
-		execution, err := common.PerformRequest(req, client)
+		execution, err := core.PerformRequest(req, client)
 		if err != nil {
 			log.Println("client: could not create request:", err)
 			return err
@@ -59,7 +59,7 @@ func printRequest(cCtx *cli.Context, req *http.Request) {
 	}
 }
 
-func printResponse(cCtx *cli.Context, execution common.RequestExecution) {
+func printResponse(cCtx *cli.Context, execution core.RequestExecution) {
 	if !cCtx.Bool("silent") {
 		fmt.Println("Status:", execution.Response.StatusCode)
 		fmt.Println("Response Body:\n", execution.ResponseBody)

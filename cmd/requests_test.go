@@ -8,7 +8,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/michaeldbianchi/yahr/common"
+	"github.com/michaeldbianchi/yahr/core"
 )
 
 func MockData() string {
@@ -39,11 +39,11 @@ func MockApp() *cli.App {
 		},
 		Before: func(cCtx *cli.Context) error {
 			requestData := MockData()
-			config, err := common.ParseConfig([]byte(requestData))
+			config, err := core.ParseConfig([]byte(requestData))
 			if err != nil {
 				return err
 			}
-			err = common.SetConfig(config)
+			err = core.SetConfig(config)
 			if err != nil {
 				return err
 			}
