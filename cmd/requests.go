@@ -42,10 +42,15 @@ var requestListCmd = &cli.Command{
 			group := cCtx.Args().First()
 			requests = core.FetchRequestConfigsByGroup(group)
 		}
-
 		if err != nil {
 			return err
 		}
+
+		if len(requests) < 1 {
+			fmt.Fprintln(cCtx.App.Writer, "No requests found")
+			return nil
+		}
+
 		printRequestList(cCtx, requests)
 		return nil
 	},

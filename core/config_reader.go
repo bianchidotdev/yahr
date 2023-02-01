@@ -19,6 +19,15 @@ func (e *MissingRequiredConfigError) Error() string {
 	return fmt.Sprintf(`Missing required top-level key "%s"`, e.Key)
 }
 
+type InvalidRequestConfigError struct {
+	Config interface{}
+}
+
+func (e *InvalidRequestConfigError) Error() string {
+	return fmt.Sprintf("Requests config not appropriately formatted, got %s", e.Config)
+
+}
+
 func ReadConfig(cfgFile string) ([]byte, error) {
 	tmpl, err := template.ParseFiles(cfgFile)
 	if err != nil {
@@ -53,7 +62,10 @@ func ParseConfig(configBytes []byte) (map[string]interface{}, error) {
 func SetConfig(appConfig map[string]interface{}) error {
 	viper.Set("appConfig", appConfig)
 
-	requestData := appConfig["requests"].(map[string]interface{})
+	requestData, ok := appConfig["requests"].(map[string]interface{})
+	if !ok {
+		return &InvalidRequestConfigError{Config: appConfig["requests"]}
+	}
 	if requestData == nil {
 		return &MissingRequiredConfigError{Key: "requests"}
 	}
