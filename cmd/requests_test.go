@@ -56,7 +56,6 @@ func MockApp(mockData string) *cli.App {
 
 func TestRequestsListCmd(t *testing.T) {
 	t.Run("with no args", func(t *testing.T) {
-		t.Parallel()
 		var output bytes.Buffer // capture output
 
 		app := MockApp("")
@@ -91,7 +90,6 @@ func TestRequestsListCmd(t *testing.T) {
 	})
 
 	t.Run("with a group specified", func(t *testing.T) {
-		t.Parallel()
 		var output bytes.Buffer // capture output
 
 		app := MockApp("")
@@ -124,7 +122,6 @@ func TestRequestsListCmd(t *testing.T) {
 	})
 
 	t.Run("with no requests found", func(t *testing.T) {
-		t.Parallel()
 		var output bytes.Buffer // capture output
 
 		app := MockApp("requests:\n  group:")
