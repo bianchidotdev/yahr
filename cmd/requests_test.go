@@ -138,7 +138,7 @@ func TestRequestsListCmd(t *testing.T) {
 			t.FailNow()
 		}
 
-		expected := "No requests found"
+		expected := "No requests found\n"
 		if output.String() != expected {
 			t.Errorf("expected '%s', but got '%s'", expected, output.String())
 		}
