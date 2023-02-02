@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"golang.org/x/exp/slices"
@@ -59,6 +60,38 @@ func (config HTTPConfig) Url() *url.URL {
 	}
 
 	return reqUrl
+}
+
+func (config HTTPConfig) InterpolatePathParams(params map[string]string) string {
+	regex := regexp.MustCompile(`\/:(\w+)`)
+	matches := regex.FindAllStringSubmatch("/test/:user/:test", -1)
+	if matches != nil {
+		return config.Path
+	}
+	// for _, match := range matches {
+		// TODO: implement this
+
+		// Playground test code
+		// package main
+
+		// import (
+		// 	"fmt"
+		// 	"regexp"
+		// )
+
+		// func main() {
+		// 	params := map[string]string{
+		// 	    user: "john",
+		// 	    test: "helloworld",
+		// 	}
+		// 	regex := regexp.MustCompile(`\/:(\w+)`)
+		// 	strings := regex.FindAllStringSubmatch("/test/:user/:test", -1)
+
+		// 	fmt.Println(strings)
+		// }
+
+	// }
+	return config.Path
 }
 
 func FetchRequestConfigsByGroup(group string) []RequestConfig {

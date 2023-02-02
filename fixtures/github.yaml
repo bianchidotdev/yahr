@@ -1,0 +1,6 @@
+requests:
+  github:
+    host: github.com
+    requests:
+      get_repo:
+        path: /repos/:owner/:repo
