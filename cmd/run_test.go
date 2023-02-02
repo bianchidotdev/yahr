@@ -51,7 +51,7 @@ func TestRunCmd(t *testing.T) {
 	})
 	t.Run("with a request", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, `mock server response`)
+			fmt.Fprintln(w, `Strike yer colors!`)
 		}))
 		defer ts.Close()
 
@@ -81,7 +81,7 @@ func TestRunCmd(t *testing.T) {
 		matches := []string{
 			`POST /escape HTTP/1.1`,
 			`Status: 200`,
-			`Response Body:\nmock server response`,
+			`Response Body:\nStrike yer colors!`,
 		}
 
 		for _, regex := range matches {
@@ -96,7 +96,7 @@ func TestRunCmd(t *testing.T) {
 	})
 	t.Run("with a request and silent flag", func(t *testing.T) {
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, `mock server response`)
+			fmt.Fprintln(w, `Hoist the Jolly Roger!`)
 		}))
 		defer ts.Close()
 
@@ -123,7 +123,7 @@ func TestRunCmd(t *testing.T) {
 			t.FailNow()
 		}
 
-		expected := "mock server response\n"
+		expected := "Hoist the Jolly Roger!\n"
 
 		if expected != output.String() {
 			t.Errorf("expected '%s' but got '%s'", expected, output.String())

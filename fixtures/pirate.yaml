@@ -1,6 +1,8 @@
 requests:
   monkeyness:
     host: pirate.monkeyness.com
+    headers:
+      who-are-ye: {{ .ENV_MATEY }}
     requests:
       insult:
         path: /api/insult
@@ -8,4 +10,3 @@ requests:
         path: /api/translate
         queryparams:
           english: where is the nearest restroom?
-
