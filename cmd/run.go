@@ -22,6 +22,11 @@ var RunCmd = &cli.Command{
 		// TODO: implement select menu if not provided all options
 		group := cCtx.Args().Get(0)
 		name := cCtx.Args().Get(1)
+		if group == "" || name == "" {
+			fmt.Fprintf(cCtx.App.Writer, "No group or request specified\n\n")
+			cli.ShowSubcommandHelp(cCtx)
+			return nil
+		}
 		request := core.FetchRequestConfigByName(group, name)
 		// TODO: how to handle errors effectively?
 		// if err != nil {
@@ -55,15 +60,15 @@ func printRequest(cCtx *cli.Context, req *http.Request) {
 	}
 
 	if !cCtx.Bool("silent") {
-		fmt.Printf("Request:\n%s", string(reqDump))
+		fmt.Fprintf(cCtx.App.Writer, string(reqDump))
 	}
 }
 
 func printResponse(cCtx *cli.Context, execution core.RequestExecution) {
 	if !cCtx.Bool("silent") {
-		fmt.Println("Status:", execution.Response.StatusCode)
-		fmt.Println("Response Body:\n", execution.ResponseBody)
+		fmt.Fprintf(cCtx.App.Writer, "Status: %d\n", execution.Response.StatusCode)
+		fmt.Fprintf(cCtx.App.Writer, "Response Body:\n%s", execution.ResponseBody)
 	} else {
-		fmt.Println(execution.ResponseBody)
+		fmt.Fprintf(cCtx.App.Writer, execution.ResponseBody)
 	}
 }

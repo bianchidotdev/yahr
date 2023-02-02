@@ -4,55 +4,7 @@ import (
 	"bytes"
 	"regexp"
 	"testing"
-
-	"github.com/urfave/cli/v2"
-
-	"github.com/michaeldbianchi/yahr/core"
 )
-
-func MockData() string {
-	return `requests:
-  monkey_island:
-    host: monkeyisland.example.com
-    requests:
-      escape:
-        method: "post"
-        path: /escape
-      characters:
-        path: /characters
-  davie_jones:
-    host: daviejones.example.com
-    requests:
-      locker:
-        path: /locker`
-}
-
-func MockApp(mockData string) *cli.App {
-	if mockData == "" {
-		mockData = MockData()
-	}
-	return &cli.App{
-		Name: "yahr",
-		Flags: []cli.Flag{
-			&cli.StringFlag{Name: "cfgFile", Value: "../examples/pirate.yaml"},
-		},
-		Commands: []*cli.Command{
-			RequestCmd,
-		},
-		Before: func(cCtx *cli.Context) error {
-			requestData := mockData
-			config, err := core.ParseConfig([]byte(requestData))
-			if err != nil {
-				return err
-			}
-			err = core.SetConfig(config)
-			if err != nil {
-				return err
-			}
-			return nil
-		},
-	}
-}
 
 func TestRequestsListCmd(t *testing.T) {
 	t.Run("with no args", func(t *testing.T) {
