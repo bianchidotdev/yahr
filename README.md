@@ -18,25 +18,7 @@ and a CLI interface.
 * Supports dynamic path parameters
 * Supports sending JSON data
 * Supports custom headers
-
-## MVP TODO list
-
-* [x] Implement request list command
-* [x] Implement run command to actually run requests
-* [x] Fix config flag
-* [x] Fix silent flag
-* [x] More sophisticated versioning
-* [x] Separate out business logic from CLI commands
-* [x] Rework yaml spec to support groups of requests
-* [x] Fix/implement non-GET methods
-* [x] Rip out cobra
-* [x] Env var templating
-* [x] Make request methods more strict
-* [x] Implement at least happy-path tests
-* [x] Dynamic path variables `/users/:user_id`
-* [ ] Examples (esp with scripting)
-* [x] Fix up readme
-* [ ] Support dotenv for gotemplates
+* Supports gotemplate in YAML files for more dynamic requests (ie. Auth tokens) + reading from `.env` file`
 
 ## Installation
 
