@@ -1,9 +1,23 @@
 # Yahr
 
-Yahr (YAml Http Request) is a system for making HTTP requests based on YAML files.
+Yahr (YAml Http Request) is a tool for making HTTP requests based on YAML files.
+
+It's goal is to provide a simple interface for testing APIs or retrieving data in a structure format (YAML)
+that is also easy to share with friends and coworkers.
+
+The primary motivation is to be able to build a set of requests for testing an API that can live
+within the repo and be shared by a team of developers. Think Postman or Insomnia with git syncing
+and a CLI interface.
 
 > **Note**
 > This is an alpha project and should not be considered stable
+
+## Features
+
+* Makes HTTP requests (GET, POST, PUT, DELETE)
+* Supports dynamic path parameters
+* Supports sending JSON data
+* Supports custom headers
 
 ## MVP TODO list
 
@@ -19,18 +33,20 @@ Yahr (YAml Http Request) is a system for making HTTP requests based on YAML file
 * [x] Env var templating
 * [x] Make request methods more strict
 * [x] Implement at least happy-path tests
-* [ ] Dynamic path variables `/users/:user_id`
+* [x] Dynamic path variables `/users/:user_id`
 * [ ] Examples (esp with scripting)
-* [ ] Fix up readme
+* [x] Fix up readme
+* [ ] Support dotenv for gotemplates
 
-## Getting started
-
-Install with `go install`
+## Installation
 
 ``` sh
 go install github.com/michaeldbianchi/yahr
 yahr version
 ```
+
+
+## Usage
 
 List requests and run them:
 
@@ -96,7 +112,7 @@ requests:
         # how do we deal with non json payloads
         payload: {"test_payload": "yep. this is a test"}
 
-  private_server
+  private_server:
     host: localhost
     port: 2222
     scheme: http
@@ -109,7 +125,7 @@ requests:
 
 ## Roadmap
 
-* [ ] Functional http requests based off yaml file - v0.1.0
+* [x] Functional http requests based off yaml file - v0.1.0
 * [ ] Use of yahr as a go library (not just a cli app) - v0.2.0
   * [ ] with examples
 * [ ] Environments for changing http config across a series of requests (dev, staging, prod) - v0.3.0

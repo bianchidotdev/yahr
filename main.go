@@ -33,7 +33,12 @@ func NewApp() *cli.App {
 		Usage: `A yaml-driven http client for being able to easily define
 and run http requests and easily share them with your team.`,
 		Flags: []cli.Flag{
-			&cli.StringFlag{Name: "cfgFile", Aliases: []string{"c"}, Value: "./yahr.yaml"},
+			&cli.StringFlag{
+				Name: "cfgFile",
+				Aliases: []string{"c"},
+				Value: "./yahr.yaml",
+				EnvVars: []string{"YAHR_CONFIG_FILE"},
+			},
 		},
 		Commands: []*cli.Command{
 			cmd.RequestCmd,

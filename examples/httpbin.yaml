@@ -4,3 +4,22 @@ requests:
     requests:
       get:
         path: /get
+      post:
+        method: post
+        path: /post
+        payload:
+          id: "487"
+          side: starboard
+
+      put:
+        method: put
+        path: /put
+        payload:
+          id: {{ .OBJECT_ID  }}
+          yahr: ye scallywag
+
+      delete:
+        method: delete
+        path: /delete
+        payload:
+          id: {{ .OBJECT_ID  }}

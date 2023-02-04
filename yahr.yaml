@@ -11,7 +11,7 @@ requests:
       post:
         method: post
         path: /post
-        payload: {"hello": "world"}
+        payload: {"hello": "world", "id": 487} # obv. posting IDs is unlikely, but it's good for examples
       put:
         method: put
         path: /put
