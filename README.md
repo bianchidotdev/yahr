@@ -23,7 +23,7 @@ and a CLI interface.
 ## Installation
 
 ``` sh
-go install github.com/michaeldbianchi/yahr
+go install github.com/michaeldbianchi/yahr@latest
 yahr -v
 ```
 
