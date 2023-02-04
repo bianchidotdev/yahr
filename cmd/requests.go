@@ -8,7 +8,7 @@ import (
 	"github.com/michaeldbianchi/yahr/core"
 )
 
-func printRequestList(cCtx *cli.Context, requests []core.RequestConfig) {
+func printRequestList(cCtx *cli.Context, requests []*core.RequestConfig) {
 	table := termtables.CreateTable()
 
 	table.AddHeaders("Group", "Name", "Method", "Endpoint")
@@ -34,7 +34,7 @@ var requestListCmd = &cli.Command{
 	Usage:     "List all requests, optionally limited to group of requests",
 	ArgsUsage: "[GROUP]",
 	Action: func(cCtx *cli.Context) error {
-		var requests []core.RequestConfig
+		var requests []*core.RequestConfig
 		var err error
 		if cCtx.NArg() < 1 {
 			requests = core.FetchRequestConfigs()
