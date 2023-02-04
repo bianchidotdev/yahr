@@ -13,6 +13,20 @@ import (
 	"github.com/michaeldbianchi/yahr/core"
 )
 
+func setPathParams(cCtx *cli.Context) error {
+	var pathParams = make(map[string]string)
+	for _, param := range cCtx.StringSlice("path-param") {
+		split := strings.Split(param, "=")
+		if split[0] == "" || split[1:] == nil {
+			return fmt.Errorf("Invalid path params - must be specified in key=value pairs")
+		}
+		value := strings.Join(split[1:], "=")
+		pathParams[split[0]] = value
+	}
+	viper.Set("pathParams", pathParams)
+	return nil
+}
+
 var RunCmd = &cli.Command{
 	Name:      "run",
 	Aliases:   []string{"r"},
@@ -27,24 +41,18 @@ var RunCmd = &cli.Command{
 		},
 	},
 	Action: func(cCtx *cli.Context) error {
-		// TODO: implement select menu if not provided all options
 		group := cCtx.Args().Get(0)
 		name := cCtx.Args().Get(1)
 		if group == "" || name == "" {
+			// TODO: implement select menu if not provided all options
 			fmt.Fprintf(cCtx.App.Writer, "No group or request specified\n\n")
 			cli.ShowSubcommandHelp(cCtx)
 			return nil
 		}
-		var pathParams = make(map[string]string)
-		for _, param := range cCtx.StringSlice("path-param") {
-			split := strings.Split(param, "=")
-			if split[0] == "" || split[1:] == nil {
-				return fmt.Errorf("Invalid path params - must be specified in key=value pairs")
-			}
-			value := strings.Join(split[1:], "=")
-			pathParams[split[0]] = value
+		err := setPathParams(cCtx)
+		if err != nil {
+			return err
 		}
-		viper.Set("pathParams", pathParams)
 
 		request := core.FetchRequestConfigByName(group, name)
 		if request != nil {

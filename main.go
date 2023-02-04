@@ -23,7 +23,7 @@ var (
 func NewApp() *cli.App {
 	app := &cli.App{
 		Name:     "yahr",
-		Version:  version,
+		Version:  version, // TODO: version doesn't seem to be working well...
 		Compiled: time.Now(),
 		Authors: []*cli.Author{
 			&cli.Author{
@@ -46,11 +46,6 @@ and run http requests and easily share them with your team.`,
 			cmd.RunCmd,
 		},
 		Before: func(cCtx *cli.Context) error {
-			// err := godotenv.Load()
-			// if err != nil {
-			// 	return fmt.Errorf("Error loading .env file - %s", err)
-			// }
-
 			configBytes, err := core.ReadConfig(cCtx.String("cfgFile"))
 			if err != nil {
 				return fmt.Errorf("Error reading config - %s", err)

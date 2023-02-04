@@ -71,6 +71,16 @@ yahr run httpbin get
 yahr run -s httpbin get | jq .origin
 
 # "89.188.181.42"
+
+# with dynamic path parameters
+
+yahr -c fixtures/github.yaml run -p owner=michaeldbianchi -p repo=yahr -s github get_repo | jq "{stargazers_count, open_issues}"
+
+# {
+#   "stargazers_count": 0,
+#   "open_issues": 0
+# }
+
 ```
 
 ### Scripting
