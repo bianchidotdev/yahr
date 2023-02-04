@@ -30,6 +30,9 @@ yahr -v
 
 ## Usage
 
+`yahr` will read from the current directory's `./yahr.yaml` file if it exists. You can specify a different
+config file with `yahr -c ~/other_yahr_file.yaml` or by using the `YAHR_CONFIG_FILE` environment variable.
+
 List requests and run them:
 
 ``` sh
