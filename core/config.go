@@ -5,12 +5,12 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
-
-	"golang.org/x/exp/slices"
 
 	"github.com/imdario/mergo"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slices"
 )
 
 type InvalidHTTPMethodError struct {
@@ -24,13 +24,13 @@ func (m *InvalidHTTPMethodError) Error() string {
 type RequestConfig struct {
 	Name      string
 	GroupName string
-	HTTPConfig
+	*HTTPConfig
 }
 
 type RequestGroup struct {
 	Name     string
-	Requests []RequestConfig
-	HTTPConfig
+	Requests []*RequestConfig
+	*HTTPConfig
 }
 
 type HTTPConfig struct {
@@ -61,14 +61,39 @@ func (config HTTPConfig) Url() *url.URL {
 	return reqUrl
 }
 
-func FetchRequestConfigsByGroup(group string) []RequestConfig {
+func (config HTTPConfig) InterpolatePathParams() (string, error) {
+	path := config.Path
+	regex := regexp.MustCompile(`/:(\w+)`)
+	matches := regex.FindAllStringSubmatch(path, -1)
+	if matches == nil {
+		return path, nil
+	}
+
+	params := viper.GetStringMapString("pathParams")
+	for _, match := range matches {
+		match_string := match[1]
+		if match_string == "" {
+			return "", fmt.Errorf("empty path param: %s", match[0])
+		}
+		replacement, ok := params[match_string]
+		if !ok {
+			// TODO: maybe don't error out here and delegate errors to the validatiom method
+			return "", fmt.Errorf("missing required path param '%s' - specify with '-p %s=<value>'", match_string, match_string)
+		}
+		path = strings.ReplaceAll(path, fmt.Sprintf(":%s", match_string), replacement)
+	}
+
+	return path, nil
+}
+
+func FetchRequestConfigsByGroup(group string) []*RequestConfig {
 	groupConfig := fetchRequestGroup(group)
 
 	return groupConfig.Requests
 }
 
-func FetchRequestConfigs() []RequestConfig {
-	var requests []RequestConfig
+func FetchRequestConfigs() []*RequestConfig {
+	var requests []*RequestConfig
 
 	for _, group := range fetchRequestGroups() {
 		for _, req := range group.Requests {
@@ -79,7 +104,7 @@ func FetchRequestConfigs() []RequestConfig {
 	return requests
 }
 
-func FetchRequestConfigByName(group string, reqName string) RequestConfig {
+func FetchRequestConfigByName(group string, reqName string) *RequestConfig {
 	req, err := makeRequestConfig(group, reqName)
 	if err != nil {
 		log.Fatal("Failed to parse request - ", err)
@@ -88,8 +113,8 @@ func FetchRequestConfigByName(group string, reqName string) RequestConfig {
 	return req
 }
 
-func fetchRequestGroups() []RequestGroup {
-	var groups []RequestGroup
+func fetchRequestGroups() []*RequestGroup {
+	var groups []*RequestGroup
 
 	for group, _ := range viper.GetStringMap("requests") {
 		groupConfig := makeRequestGroup(group)
@@ -99,12 +124,12 @@ func fetchRequestGroups() []RequestGroup {
 	return groups
 }
 
-func fetchRequestGroup(group string) RequestGroup {
+func fetchRequestGroup(group string) *RequestGroup {
 	return makeRequestGroup(group)
 }
 
-func makeRequestGroup(group string) RequestGroup {
-	var requests []RequestConfig
+func makeRequestGroup(group string) *RequestGroup {
+	var requests []*RequestConfig
 	groupAccessKey := fmt.Sprintf("requests.%s.requests", group)
 	for key, _ := range viper.GetStringMap(groupAccessKey) {
 		req, err := makeRequestConfig(group, key)
@@ -114,49 +139,52 @@ func makeRequestGroup(group string) RequestGroup {
 
 		requests = append(requests, req)
 	}
-	// TODO: handle group level configuration
-	return RequestGroup{
+	return &RequestGroup{
 		Name:     group,
 		Requests: requests,
 	}
 }
 
-func makeDefaultHTTPConfig() HTTPConfig {
-	return HTTPConfig{
+func makeDefaultHTTPConfig() *HTTPConfig {
+	return &HTTPConfig{
 		Method: "get",
 		Scheme: "https",
 		Path:   "/",
 	}
 }
 
-func makeRequestConfig(group string, requestName string) (RequestConfig, error) {
+func makeRequestConfig(group string, requestName string) (*RequestConfig, error) {
 	groupHTTPConfig := makeDefaultHTTPConfig()
 	err := viper.UnmarshalKey(fmt.Sprintf("requests.%s", group), &groupHTTPConfig)
 	if err != nil {
 		log.Println("Failed to parse group", err)
-		return RequestConfig{}, err
+		return nil, err
 	}
 
 	accessKey := fmt.Sprintf("requests.%s.requests.%s", group, requestName)
-	var httpConfig HTTPConfig
+	var httpConfig *HTTPConfig
 	err = viper.UnmarshalKey(accessKey, &httpConfig)
 	// TODO: this doesn't seem to be working
 	if err != nil {
-		log.Println("Failed to parse request", err)
-		return RequestConfig{}, err
+		return nil, err
 	}
 
-	err = mergo.Merge(&httpConfig, groupHTTPConfig)
+	err = mergo.Merge(httpConfig, groupHTTPConfig)
 	if err != nil {
-		log.Fatal("Failed merging request configs", err)
+		return nil, fmt.Errorf("Failed merging request configs: %s", err)
+	}
+
+	httpConfig.Path, err = httpConfig.InterpolatePathParams()
+	if err != nil {
+		return nil, err
 	}
 
 	err = validateHTTPConfig(httpConfig)
 	if err != nil {
-		return RequestConfig{}, err
+		return nil, err
 	}
 
-	request := RequestConfig{
+	request := &RequestConfig{
 		Name:       requestName,
 		GroupName:  group,
 		HTTPConfig: httpConfig,
@@ -165,7 +193,8 @@ func makeRequestConfig(group string, requestName string) (RequestConfig, error) 
 	return request, nil
 }
 
-func validateHTTPConfig(config HTTPConfig) error {
+// TODO: make function on struct
+func validateHTTPConfig(config *HTTPConfig) error {
 	httpMethods := []string{
 		http.MethodGet,
 		http.MethodHead,

@@ -20,6 +20,8 @@ Yahr (YAml Http Request) is a system for making HTTP requests based on YAML file
 * [x] Make request methods more strict
 * [x] Implement at least happy-path tests
 * [ ] Dynamic path variables `/users/:user_id`
+* [ ] Examples (esp with scripting)
+* [ ] Fix up readme
 
 ## Getting started
 
@@ -109,6 +111,7 @@ requests:
 
 * [ ] Functional http requests based off yaml file - v0.1.0
 * [ ] Use of yahr as a go library (not just a cli app) - v0.2.0
+  * [ ] with examples
 * [ ] Environments for changing http config across a series of requests (dev, staging, prod) - v0.3.0
 * [ ] Sequences of requests
 * [ ] Inherit/import from other configuration files

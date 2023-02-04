@@ -16,23 +16,23 @@ type RequestExecution struct {
 }
 
 // Run entire request based off of config
-func Execute(reqConfig RequestConfig) (RequestExecution, error) {
+func Execute(reqConfig *RequestConfig) (*RequestExecution, error) {
 	client := BuildClient(reqConfig.HTTPConfig)
 	req, err := BuildHTTPRequest(reqConfig.HTTPConfig)
 	if err != nil {
-		return RequestExecution{Request: req}, err
+		return &RequestExecution{Request: req}, err
 	}
 
 	log.Printf("Performing request for %s", reqConfig.Name)
 	return PerformRequest(req, client)
 }
 
-func BuildClient(config HTTPConfig) *http.Client {
+func BuildClient(config *HTTPConfig) *http.Client {
 	client := &http.Client{}
 	return client
 }
 
-func BuildHTTPRequest(config HTTPConfig) (*http.Request, error) {
+func BuildHTTPRequest(config *HTTPConfig) (*http.Request, error) {
 	url := config.Url()
 
 	body, err := buildPayload(config)
@@ -48,8 +48,8 @@ func BuildHTTPRequest(config HTTPConfig) (*http.Request, error) {
 	return req, err
 }
 
-func PerformRequest(req *http.Request, client *http.Client) (RequestExecution, error) {
-	execution := RequestExecution{
+func PerformRequest(req *http.Request, client *http.Client) (*RequestExecution, error) {
+	execution := &RequestExecution{
 		Request: req,
 	}
 	execution.Request = req
@@ -73,7 +73,7 @@ func PerformRequest(req *http.Request, client *http.Client) (RequestExecution, e
 	return execution, err
 }
 
-func buildPayload(config HTTPConfig) (io.Reader, error) {
+func buildPayload(config *HTTPConfig) (io.Reader, error) {
 	var body io.Reader
 	if config.Payload != nil {
 		// req.Header.Add("content-type", "application/json")

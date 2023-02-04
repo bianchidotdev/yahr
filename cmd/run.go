@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"strings"
+
+	"github.com/spf13/viper"
+	"github.com/urfave/cli/v2"
 
 	"github.com/michaeldbianchi/yahr/core"
 )
@@ -17,6 +20,11 @@ var RunCmd = &cli.Command{
 	ArgsUsage: "GROUP REQUEST",
 	Flags: []cli.Flag{
 		&cli.BoolFlag{Name: "silent", Aliases: []string{"s"}},
+		&cli.StringSliceFlag{
+			Name:    "path-param",
+			Usage:   "params for path interpolation - key=value",
+			Aliases: []string{"p"},
+		},
 	},
 	Action: func(cCtx *cli.Context) error {
 		// TODO: implement select menu if not provided all options
@@ -27,11 +35,21 @@ var RunCmd = &cli.Command{
 			cli.ShowSubcommandHelp(cCtx)
 			return nil
 		}
+		var pathParams = make(map[string]string)
+		for _, param := range cCtx.StringSlice("path-param") {
+			split := strings.Split(param, "=")
+			if split[0] == "" || split[1:] == nil {
+				return fmt.Errorf("Invalid path params - must be specified in key=value pairs")
+			}
+			value := strings.Join(split[1:], "=")
+			pathParams[split[0]] = value
+		}
+		viper.Set("pathParams", pathParams)
+
 		request := core.FetchRequestConfigByName(group, name)
-		// TODO: how to handle errors effectively?
-		// if err != nil {
-		// 	log.Fatal("Could not find request", err)
-		// }
+		if request != nil {
+			fmt.Errorf("Could not find request - %s, %s", group, name)
+		}
 
 		client := core.BuildClient(request.HTTPConfig)
 		req, err := core.BuildHTTPRequest(request.HTTPConfig)
@@ -64,7 +82,7 @@ func printRequest(cCtx *cli.Context, req *http.Request) {
 	}
 }
 
-func printResponse(cCtx *cli.Context, execution core.RequestExecution) {
+func printResponse(cCtx *cli.Context, execution *core.RequestExecution) {
 	if !cCtx.Bool("silent") {
 		fmt.Fprintf(cCtx.App.Writer, "Status: %d\n", execution.Response.StatusCode)
 		fmt.Fprintf(cCtx.App.Writer, "Response Body:\n%s", execution.ResponseBody)
