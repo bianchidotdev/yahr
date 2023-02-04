@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/brettski/go-termtables v0.0.0-20190907034855-12ddd59af020
 	github.com/imdario/mergo v0.3.13
+	github.com/joho/godotenv v1.5.0
 	github.com/spf13/viper v1.14.0
 	github.com/urfave/cli/v2 v2.24.1
 	golang.org/x/exp v0.0.0-20230126173853-a67bb567ff2e

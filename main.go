@@ -1,22 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
 
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/urfave/cli/v2"
+
 	"github.com/michaeldbianchi/yahr/cmd"
 	"github.com/michaeldbianchi/yahr/core"
-	"github.com/urfave/cli/v2"
 )
 
 // used by goreleaser
 var (
-	shortened = false
-	version   = "dev"
-	commit    = "none"
-	date      = "unknown"
-	output    = "json"
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func NewApp() *cli.App {
@@ -34,9 +35,9 @@ func NewApp() *cli.App {
 and run http requests and easily share them with your team.`,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name: "cfgFile",
+				Name:    "cfgFile",
 				Aliases: []string{"c"},
-				Value: "./yahr.yaml",
+				Value:   "./yahr.yaml",
 				EnvVars: []string{"YAHR_CONFIG_FILE"},
 			},
 		},
@@ -45,18 +46,21 @@ and run http requests and easily share them with your team.`,
 			cmd.RunCmd,
 		},
 		Before: func(cCtx *cli.Context) error {
+			// err := godotenv.Load()
+			// if err != nil {
+			// 	return fmt.Errorf("Error loading .env file - %s", err)
+			// }
+
 			configBytes, err := core.ReadConfig(cCtx.String("cfgFile"))
 			if err != nil {
-				log.Println("Error reading config: ", err)
-				return err
+				return fmt.Errorf("Error reading config - %s", err)
 			}
 
 			appConfig, err := core.ParseConfig(configBytes)
 
 			err = core.SetConfig(appConfig)
 			if err != nil {
-				log.Println("Error reading config: ", err)
-				return err
+				return fmt.Errorf("Error reading config - %s", err)
 			}
 			return nil
 		},

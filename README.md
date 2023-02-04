@@ -42,7 +42,7 @@ and a CLI interface.
 
 ``` sh
 go install github.com/michaeldbianchi/yahr
-yahr version
+yahr -v
 ```
 
 
@@ -91,6 +91,17 @@ yahr run -s httpbin get | jq .origin
 # "89.188.181.42"
 ```
 
+### Scripting
+
+Right now, `yahr` as a tool can only make a single request at a time.
+However, if you are interested in stringing together requests, you can absolutely do that primitively
+through using a shell script.
+
+Check out [examples/series_of_requests.sh](examples/series_of_requests.sh) for a simple example.
+
+In a future release, I expect to refine the `yahr` core library so it's
+also possible to use this tool easily within go scripts.
+
 ## Reference
 
 YAML spec
@@ -126,18 +137,22 @@ requests:
 ## Roadmap
 
 * [x] Functional http requests based off yaml file - v0.1.0
+* [ ] brew install
 * [ ] Use of yahr as a go library (not just a cli app) - v0.2.0
   * [ ] with examples
 * [ ] Environments for changing http config across a series of requests (dev, staging, prod) - v0.3.0
 * [ ] Sequences of requests
 * [ ] Inherit/import from other configuration files
 
+Additional nice-to-haves:
+* [ ] Output request as curl (maybe in yahr requests show GROUP NAME)
+
 ### Anti-features
 
 This is a set of features I don't foresee ever implementing in this project, usually because I foresee the complexity overwhelming what should be a straightforward tool.
 
-* [ ] Arbitrarily nestable groups for deduplication of auth/headers/base-urls
-* [ ] Feeding output from one request into another (I think this would be too complex for the codebase and can be done easily with light scripting)
+* Arbitrarily nestable groups for deduplication of auth/headers/base-urls
+* Feeding output from one request into another (I think this would be too complex for the codebase and can be done easily with light scripting)
 
 ## Appendix
 

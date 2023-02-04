@@ -17,3 +17,4 @@
 yahr
 
 dist/
+.env
