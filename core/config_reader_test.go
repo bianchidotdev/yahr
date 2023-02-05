@@ -36,7 +36,7 @@ func TestReadConfig(t *testing.T) {
       translate:
         path: /api/translate
         queryparams:
-          english: where is the nearest restroom?
+          english: where is the nearest restroom
 `
 		if expected != string(config) {
 			t.Errorf("expected '%s' but got '%s'", expected, config)
