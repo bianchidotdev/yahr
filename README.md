@@ -149,6 +149,10 @@ This is a set of features I don't foresee ever implementing in this project, usu
 * Arbitrarily nestable groups for deduplication of auth/headers/base-urls
 * Feeding output from one request into another (I think this would be too complex for the codebase and can be done easily with light scripting)
 
+## Contributing
+
+Please take a look at our [contributing guide](CONTRIBUTING.md).
+
 ## Appendix
 
 Potential future spec
