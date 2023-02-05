@@ -37,3 +37,13 @@ requests:
     requests:
       get:
         path: /get
+
+  pirate:
+    host: pirate.monkeyness.com
+    requests:
+      insult:
+        path: /api/insult
+      translate:
+        path: /api/translate
+        queryparams:
+          english: where is the nearest restroom

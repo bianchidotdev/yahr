@@ -54,9 +54,9 @@ var RunCmd = &cli.Command{
 			return err
 		}
 
-		request := core.FetchRequestConfigByName(group, name)
-		if request != nil {
-			fmt.Errorf("Could not find request - %s, %s", group, name)
+		request, err := core.FetchRequestConfigByName(group, name)
+		if err != nil {
+			return err
 		}
 
 		client := core.BuildClient(request.HTTPConfig)

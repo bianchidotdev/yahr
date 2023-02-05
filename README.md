@@ -65,7 +65,7 @@ yahr run httpbin get
 #     "User-Agent": "Go-http-client/2.0",
 #     "X-Amzn-Trace-Id": "Root=1-63cb33d6-0e6501db48f84bf2260e7dc3"
 #   },
-#   "origin": "89.187.180.41",
+#   "origin": "89.188.181.42",
 #   "url": "https://httpbin.org/get"
 # }
 

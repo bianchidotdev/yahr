@@ -13,6 +13,14 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+type RequestNotFoundError struct {
+	Path string
+}
+
+func (m *RequestNotFoundError) Error() string {
+	return fmt.Sprintf("Cannot find path '%s' in yaml config", m.Path)
+}
+
 type InvalidHTTPMethodError struct {
 	Method string
 }
@@ -104,13 +112,13 @@ func FetchRequestConfigs() []*RequestConfig {
 	return requests
 }
 
-func FetchRequestConfigByName(group string, reqName string) *RequestConfig {
+func FetchRequestConfigByName(group string, reqName string) (*RequestConfig, error) {
 	req, err := makeRequestConfig(group, reqName)
 	if err != nil {
-		log.Fatal("Failed to parse request - ", err)
+		return nil, err
 	}
 
-	return req
+	return req, nil
 }
 
 func fetchRequestGroups() []*RequestGroup {
@@ -154,17 +162,25 @@ func makeDefaultHTTPConfig() *HTTPConfig {
 }
 
 func makeRequestConfig(group string, requestName string) (*RequestConfig, error) {
+	groupAccessKey := fmt.Sprintf("requests.%s", group)
+	if !viper.IsSet(groupAccessKey) {
+		return nil, &RequestNotFoundError{Path: groupAccessKey}
+	}
+
 	groupHTTPConfig := makeDefaultHTTPConfig()
-	err := viper.UnmarshalKey(fmt.Sprintf("requests.%s", group), &groupHTTPConfig)
+	err := viper.UnmarshalKey(groupAccessKey, &groupHTTPConfig)
 	if err != nil {
 		log.Println("Failed to parse group", err)
 		return nil, err
 	}
 
 	accessKey := fmt.Sprintf("requests.%s.requests.%s", group, requestName)
+	if !viper.IsSet(accessKey) {
+		return nil, &RequestNotFoundError{Path: accessKey}
+	}
+
 	var httpConfig *HTTPConfig
 	err = viper.UnmarshalKey(accessKey, &httpConfig)
-	// TODO: this doesn't seem to be working
 	if err != nil {
 		return nil, err
 	}
