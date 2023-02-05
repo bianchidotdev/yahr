@@ -141,6 +141,8 @@ requests:
 
 Additional nice-to-haves:
 * [ ] Output request as curl (maybe in yahr requests show GROUP NAME)
+* [ ] Import from postman/insomnia collection
+* [ ] Import from OpenAPI spec (probably out of scope)
 
 ### Anti-features
 
