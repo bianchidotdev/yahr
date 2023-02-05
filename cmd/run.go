@@ -75,6 +75,9 @@ var RunCmd = &cli.Command{
 		}
 
 		printResponse(cCtx, execution)
+		if execution.Response.StatusCode >= 400 {
+			return cli.Exit("", 1)
+		}
 		return nil
 	},
 }

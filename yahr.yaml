@@ -8,6 +8,8 @@ requests:
           test: test
       get200:
         path: /status/200
+      get_status:
+        path: /status/:status
       post:
         method: post
         path: /post
