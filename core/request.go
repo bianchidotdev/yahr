@@ -33,7 +33,10 @@ func BuildClient(config *HTTPConfig) *http.Client {
 }
 
 func BuildHTTPRequest(config *HTTPConfig) (*http.Request, error) {
-	url := config.Url()
+	url, err := config.RequestUrl()
+	if err != nil {
+		return nil, err
+	}
 
 	body, err := buildPayload(config)
 	if err != nil {

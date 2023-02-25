@@ -13,7 +13,7 @@ func printRequestList(cCtx *cli.Context, requests []*core.RequestConfig) {
 
 	table.AddHeaders("Group", "Name", "Method", "Endpoint")
 	for _, req := range requests {
-		table.AddRow(req.GroupName, req.Name, req.Method, req.Url())
+		table.AddRow(req.GroupName, req.Name, req.Method, req.EndpointUrl())
 	}
 	// fmt.Println(table.Render())
 	fmt.Fprintf(cCtx.App.Writer, table.Render())

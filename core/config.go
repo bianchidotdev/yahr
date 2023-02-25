@@ -51,47 +51,53 @@ type HTTPConfig struct {
 	QueryParams map[string]string      `yaml:"query_params"`
 }
 
-func (config HTTPConfig) Url() *url.URL {
-	reqUrl := &url.URL{
-		Scheme: config.Scheme,
-		Host:   config.Host,
-		Path:   config.Path,
+func (config HTTPConfig) EndpointUrl() *url.URL {
+	return constructUrl(config.Scheme, config.Host, config.Path, config.QueryParams)
+}
+
+func (config HTTPConfig) RequestUrl() (*url.URL, error) {
+	path := config.Path
+	regex := regexp.MustCompile(`/:(\w+)`)
+	matches := regex.FindAllStringSubmatch(path, -1)
+	if matches == nil {
+		url := constructUrl(config.Scheme, config.Host, config.Path, config.QueryParams)
+		return url, nil
 	}
 
-	if config.QueryParams != nil {
+	params := viper.GetStringMapString("pathParams") //
+	for _, match := range matches {
+		match_string := match[1]
+		if match_string == "" {
+			return nil, fmt.Errorf("empty path param: %s", match[0])
+		}
+		replacement, ok := params[match_string]
+		if !ok {
+			// TODO: maybe don't error out here and delegate errors to the validatiom method
+			return nil, fmt.Errorf("missing required path param '%s' - specify with '-p %s=<value>'", match_string, match_string)
+		}
+		path = strings.ReplaceAll(path, fmt.Sprintf(":%s", match_string), replacement)
+	}
+
+	url := constructUrl(config.Scheme, config.Host, path, config.QueryParams)
+	return url, nil
+}
+
+func constructUrl(scheme string, host string, path string, queryParams map[string]string) *url.URL {
+	reqUrl := &url.URL{
+		Scheme: scheme,
+		Host:   host,
+		Path:   path,
+	}
+
+	if queryParams != nil {
 		query := url.Values{}
-		for key, value := range config.QueryParams {
+		for key, value := range queryParams {
 			query.Add(key, value)
 		}
 		reqUrl.RawQuery = query.Encode()
 	}
 
 	return reqUrl
-}
-
-func (config HTTPConfig) InterpolatePathParams() (string, error) {
-	path := config.Path
-	regex := regexp.MustCompile(`/:(\w+)`)
-	matches := regex.FindAllStringSubmatch(path, -1)
-	if matches == nil {
-		return path, nil
-	}
-
-	params := viper.GetStringMapString("pathParams")
-	for _, match := range matches {
-		match_string := match[1]
-		if match_string == "" {
-			return "", fmt.Errorf("empty path param: %s", match[0])
-		}
-		replacement, ok := params[match_string]
-		if !ok {
-			// TODO: maybe don't error out here and delegate errors to the validatiom method
-			return "", fmt.Errorf("missing required path param '%s' - specify with '-p %s=<value>'", match_string, match_string)
-		}
-		path = strings.ReplaceAll(path, fmt.Sprintf(":%s", match_string), replacement)
-	}
-
-	return path, nil
 }
 
 func FetchRequestConfigsByGroup(group string) []*RequestConfig {
@@ -188,11 +194,6 @@ func makeRequestConfig(group string, requestName string) (*RequestConfig, error)
 	err = mergo.Merge(httpConfig, groupHTTPConfig)
 	if err != nil {
 		return nil, fmt.Errorf("Failed merging request configs: %s", err)
-	}
-
-	httpConfig.Path, err = httpConfig.InterpolatePathParams()
-	if err != nil {
-		return nil, err
 	}
 
 	err = validateHTTPConfig(httpConfig)

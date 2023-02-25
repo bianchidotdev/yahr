@@ -26,7 +26,7 @@ func NewApp() *cli.App {
 		Version:  version, // TODO: version doesn't seem to be working well...
 		Compiled: time.Now(),
 		Authors: []*cli.Author{
-			&cli.Author{
+			{
 				Name:  "Michael Bianchi",
 				Email: "michael@bianchi.dev",
 			},
