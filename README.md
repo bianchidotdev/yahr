@@ -23,7 +23,7 @@ and a CLI interface.
 ## Installation
 
 ``` sh
-go install github.com/michaeldbianchi/yahr@latest
+go install github.com/bianchidotdev/yahr@latest
 yahr -v
 ```
 
@@ -77,7 +77,7 @@ yahr run -s httpbin get | jq .origin
 
 # with dynamic path parameters
 
-yahr -c fixtures/github.yaml run -p owner=michaeldbianchi -p repo=yahr -s github get_repo | jq "{stargazers_count, open_issues}"
+yahr -c fixtures/github.yaml run -p owner=bianchidotdev -p repo=yahr -s github get_repo | jq "{stargazers_count, open_issues}"
 
 # {
 #   "stargazers_count": 0,

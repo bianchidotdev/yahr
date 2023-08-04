@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
 
-	"github.com/michaeldbianchi/yahr/core"
+	"github.com/bianchidotdev/yahr/core"
 )
 
 func setPathParams(cCtx *cli.Context) error {

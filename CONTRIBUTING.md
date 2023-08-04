@@ -4,7 +4,7 @@
 
 ## How can I contribute?
 
-If you see bugs or would like to propose a new feature, please create an [issue](https://github.com/michaeldbianchi/yahr/issues) in the repo. With any bug reports, it is most helpful if you can include the type of machine you are using along with the version of the tool.
+If you see bugs or would like to propose a new feature, please create an [issue](https://github.com/bianchidotdev/yahr/issues) in the repo. With any bug reports, it is most helpful if you can include the type of machine you are using along with the version of the tool.
 
 If while using the project, something is unclear, please create an issue and ask a question. Issues with documenation are issues with the tool!
 

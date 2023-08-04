@@ -1,4 +1,4 @@
-module github.com/michaeldbianchi/yahr
+module github.com/bianchidotdev/yahr
 
 go 1.19
 

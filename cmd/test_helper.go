@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/urfave/cli/v2"
 
-	"github.com/michaeldbianchi/yahr/core"
+	"github.com/bianchidotdev/yahr/core"
 )
 
 func MockData() string {

@@ -9,8 +9,8 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/urfave/cli/v2"
 
-	"github.com/michaeldbianchi/yahr/cmd"
-	"github.com/michaeldbianchi/yahr/core"
+	"github.com/bianchidotdev/yahr/cmd"
+	"github.com/bianchidotdev/yahr/core"
 )
 
 // used by goreleaser

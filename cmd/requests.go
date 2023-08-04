@@ -5,7 +5,7 @@ import (
 	termtables "github.com/brettski/go-termtables"
 	"github.com/urfave/cli/v2"
 
-	"github.com/michaeldbianchi/yahr/core"
+	"github.com/bianchidotdev/yahr/core"
 )
 
 func printRequestList(cCtx *cli.Context, requests []*core.RequestConfig) {
